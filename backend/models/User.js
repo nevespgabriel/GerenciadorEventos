@@ -22,5 +22,21 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {});
 
+  User.beforeCreate(async (user, options) => {
+    if (user.password) {
+      user.password = await bcrypt.hash(user.password, 10);
+    }
+  });
+
+  User.beforeUpdate(async (user, options) => {
+    if (user.password) {
+      user.password = await bcrypt.hash(user.password, 10);
+    }
+  });
+
+  User.prototype.isValidPassword = async function(password) {
+    return await bcrypt.compare(password, this.password);
+  };
+
   return User;
 };
