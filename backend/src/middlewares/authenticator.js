@@ -7,7 +7,7 @@ export default async (req, res, next) => {
     const user = verifyToken(token);
 
     if (user) {
-      req.user = await User.findById(user._id).exec();
+      req.user = await User.findById(user.id).exec();
       console.log(req.user)
       next();
     } else {

@@ -8,7 +8,13 @@ export default (sequelize, DataTypes) => {
     },
     datetime: {
       type: DataTypes.DATE, 
-      allowNull: false
+      allowNull: false,
+      validate: {
+        isAfter: {
+          args: new Date().toString(), // Data e hora atuais
+          msg: 'A data e hora do evento deve ser posterior à data e hora atual.'
+        }
+      }
     },
     location: {
       type: DataTypes.STRING,
@@ -16,7 +22,13 @@ export default (sequelize, DataTypes) => {
     },
     capacity: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        min: {
+          args: [1], // Valor mínimo permitido
+          msg: 'A capacidade deve ser maior que 0.'
+        }
+      }
     },
     status: {
       type: DataTypes.ENUM,
