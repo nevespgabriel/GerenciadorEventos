@@ -1,21 +1,26 @@
 import { generateToken } from "../services/jwt-service.js";
-import User from "../models/User.js";
+import db from "../models/index.js";
+const { Users } = db
+
 
 const newUser = async (req, res, role) => {
   try {
-    const { name, cpf, email, password} = req.body;
-    const user = await User.create({ name, cpf, email, password, role});
-    return user;
+    console.log("Até aqui foi");
+    const { name, cpf, email, password } = req.body;
+    const user = await Users.create({ name, cpf, email, password, role});
+    return user;  // Apenas retornamos o usuário sem tentar enviar resposta
   } catch (error) {
+    // Garantir que a resposta seja enviada apenas uma vez
     if (error.name === 'SequelizeValidationError') {
       return res.status(400).json({ message: error.errors.map(e => e.message) });
     }
     if (error.name === 'SequelizeUniqueConstraintError') {
       return res.status(400).json({ message: 'O CPF ou o e-mail já estão em uso.' });
     }
-    res.status(500).send(error.message);
+    // Envia a resposta de erro no caso de outro tipo de erro
+    return res.status(500).send(error.message);
   }
-}
+};
 
 export const login = async (req, res) => {
   try {
@@ -39,17 +44,21 @@ export const login = async (req, res) => {
   }
 };
 
-
 export const signup = async (req, res) => {
   try {
-    const user = await newUser(req, res, "user"); 
-    const token = generateToken(user); 
+    console.log(req.body);
+    const user = await newUser(req, res, "user");  // A resposta de erro já foi enviada se ocorrer um erro aqui
 
-    res.status(201).json({
-      token, 
-    });
+    if (!user) { 
+      // Se `newUser` falhar, não continue com a execução
+      return; 
+    }
+
+    // Envia a resposta de sucesso
+    res.status(201);
   } catch (error) {
-    res.status(500).send(error.message); 
+    console.error(error);
+    res.status(500).send(error.message);  // Resposta de erro caso haja exceção no fluxo
   }
 };
 

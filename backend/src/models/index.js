@@ -1,3 +1,5 @@
+// models/index.js
+
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -48,6 +50,11 @@ const loadModels = async () => {
       db[modelName].associate(db);
     }
   });
+
+  // Aqui você pode adicionar explicitamente o modelo User ao sequelize.models
+  sequelize.models.Users = db.Users;  // Registro explícito do modelo
+  sequelize.models.Event = db.Event;
+  sequelize.models.Registration = db.Registration;
 
   db.sequelize = sequelize;  
   db.Sequelize = Sequelize;

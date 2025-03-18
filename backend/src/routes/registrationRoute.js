@@ -11,9 +11,6 @@ import authenticator from "../middlewares/authenticator.js";
 
 const router = Router();
 
-router.post("/login", login);
-router.post("/signup", signup);
-
 router.use(authenticator);
 
 router.post("/", store);

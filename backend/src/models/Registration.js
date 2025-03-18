@@ -14,7 +14,7 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'User', 
+        model: 'Users', 
         key: 'id' 
       }
     },
@@ -34,7 +34,7 @@ export default (sequelize, DataTypes) => {
       as: 'event'
     });
 
-    Registration.belongsTo(models.User, {
+    Registration.belongsTo(models.Users, {
       foreignKey: 'idUser',
       as: 'user'
     });

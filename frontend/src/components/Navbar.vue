@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3 text-bg-dark">
+  <div class="p-3 text-bg-dark fixed-top"> <!-- Adicionei a classe fixed-top aqui -->
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
@@ -14,17 +14,6 @@
           <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
           <li><a href="#" class="nav-link px-2 text-white">Sobre</a></li>
         </ul>
-
-        <!-- Barra de Pesquisa -->
-        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-          <input
-            type="search"
-            class="form-control form-control-dark text-bg-dark"
-            placeholder="Search..."
-            aria-label="Search"
-          />
-        </form>
-
         <!-- Botões de Login e Signup -->
         <div class="text-end">
           <button type="button" class="btn btn-outline-light me-2">Login</button>
@@ -71,6 +60,11 @@ export default {
 .nav-link:hover {
   color: #0963eb; /* Cor ao passar o mouse */
   transform: scale(1.08);
+}
+
+/* Ajustando a margem do conteúdo para evitar sobreposição com a navbar fixa */
+body {
+  padding-top: 80px; /* Adiciona espaço no topo para evitar que o conteúdo fique oculto sob a navbar */
 }
 
 /* Responsividade */

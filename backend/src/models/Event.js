@@ -40,7 +40,7 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'User', 
+        model: 'Users', 
         key: 'id' 
       }
     }
@@ -51,7 +51,7 @@ export default (sequelize, DataTypes) => {
   
   Event.associate = function(models) {
     
-    Event.belongsTo(models.User, {
+    Event.belongsTo(models.Users, {
       foreignKey: 'creatorId',
       as: 'creator'
     });
