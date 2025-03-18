@@ -1,6 +1,9 @@
 import express from "express";
 import db from "./models/index.js"; 
 import dotenv from 'dotenv';
+import userRoute from "./routes/userRoute.js";
+import eventRoute from "./routes/eventRoute.js";
+import registrationRoute from "./routes/registrationRoute.js";
 dotenv.config();
 
 const app = express();
@@ -25,3 +28,9 @@ const startServer = async () => {
 };
 
 startServer(); 
+
+app.use(express.json());
+
+app.use("/user", userRoute);
+app.use("/event", eventRoute);
+app.use("/registration", registrationRoute);
