@@ -1,12 +1,12 @@
 'use strict';
 
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
   const Registration = sequelize.define('Registration', {
     idEvent: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Events', 
+        model: 'Event', 
         key: 'id' 
       }
     },
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Users', 
+        model: 'User', 
         key: 'id' 
       }
     },
@@ -24,7 +24,9 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 'pending', 
       allowNull: false
     }
-  }, {});
+  }, {
+    freezeTableName: true, 
+  });
 
   Registration.associate = function(models) {
     Registration.belongsTo(models.Event, {

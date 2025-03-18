@@ -1,5 +1,8 @@
 'use strict';
-module.exports = (sequelize, DataTypes) => {
+
+import bcrypt from 'bcrypt';
+
+export default (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     name: {
       type: DataTypes.STRING,
@@ -20,7 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 'user',
       allowNull: false
     }
-  }, {});
+  }, {
+    freezeTableName: true, 
+  });
 
   User.beforeCreate(async (user, options) => {
     if (user.password) {

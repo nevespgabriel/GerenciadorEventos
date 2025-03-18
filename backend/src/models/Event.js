@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
   const Event = sequelize.define('Event', {
     name: {
       type: DataTypes.STRING,
@@ -20,23 +20,25 @@ module.exports = (sequelize, DataTypes) => {
     },
     status: {
       type: DataTypes.ENUM,
-      values: ['open', 'closed', 'completed', 'canceled'], // Valores possíveis para status
-      defaultValue: 'open', // Valor padrão
+      values: ['open', 'closed', 'completed', 'canceled'], 
+      defaultValue: 'open', 
       allowNull: false
     },
     creatorId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'User', // Referência à tabela 'Users'
-        key: 'id' // Chave primária da tabela 'Users'
+        model: 'User', 
+        key: 'id' 
       }
     }
-  }, {});
+  }, {
+    freezeTableName: true, 
+  });
 
-  // Relacionamento
+  
   Event.associate = function(models) {
-    // Evento pertence a um usuário (criador)
+    
     Event.belongsTo(models.User, {
       foreignKey: 'creatorId',
       as: 'creator'
