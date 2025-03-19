@@ -3,6 +3,7 @@ import {
   destroy,
   index,
   show,
+  showForUser,
   store,
   update,
 } from "../controllers/registrationController.js";
@@ -16,6 +17,7 @@ router.use(authenticator);
 router.post("/", store);
 router.put("/:id", update);
 router.get("/:idEvent/:idUser", show);
+router.get("/:idUser", showForUser);
 
 router.use(authorizer(["admin"]));
 

@@ -72,6 +72,34 @@
     },
     methods: {
       // Buscar eventos abertos pela rota /event/open
+      async showForUser() {
+        try {
+            const token = localStorage.getItem('authToken');
+            const decodedToken = jwtDecode(token);
+            console.log(decodedToken);
+            const response = await axios.get(`http://localhost:3000/registration/${decodedToken.id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            });
+
+            const regists = response.data;
+            const filteredEvents = [];
+
+            for (const regist of regists) {
+            try {
+                filteredEvents.push(regist);
+            } catch (err) {
+                alert("Erro ao buscar inscrições.");
+            }
+            }
+
+            this.events = filteredEvents;
+
+        } catch (error) {
+            console.error('Erro ao buscar eventos inscritos:', error);
+        }
+    },
       async fetchOpenEvents() {
         try {
             const token = localStorage.getItem('authToken');

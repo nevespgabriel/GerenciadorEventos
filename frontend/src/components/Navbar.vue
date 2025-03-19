@@ -11,7 +11,7 @@
         <!-- Navegação -->
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <li v-for="(item, index) in navItems" :key="index">
-            <a :href="item.link" class="nav-link px-2 text-white">{{ item.name }}</a>
+            <a :href="item.link" class="nav-link px-2 text-white" @click="handleItemClick(item.event)">{{ item.name }}</a>
           </li>
         </ul>
 
@@ -64,6 +64,9 @@ export default {
     };
   },
   methods:{
+    handleItemClick(event) {
+      this.$emit(event);
+    },
     enter() {
       this.init = false;
     },

@@ -1,13 +1,13 @@
 <template>
   <div id="app">
     <!-- Navbar com eventos para alternar entre login e signup -->
-    <Navbar :navItems="navItems" ref="navbarRef" @switchToSignUp="switchToSignUp" @switchToLogin="switchToLogin" @notAuth="notAuth"/>
+    <Navbar :navItems="navItems" ref="navbarRef" @switchToSignUp="switchToSignUp" @switchToLogin="switchToLogin" @notAuth="notAuth" @homeClicked="homeClicked" @myRegs="myRegs"/>
 
     <!-- Exibe o componente Login ou Signup com base na variável showSignUp -->
     <Login v-if="!showSignUp && !isAuthenticated" @handleLoginAdm="handleLoginAdm" @handleLoginUser="handleLoginUser"/>
     <SignUp @switchToLogin="switchToLogin" v-if="showSignUp && !isAuthenticated"/>
-    <DashboardAdm v-if="isAuthorized" />
-    <DashboardUser v-if="isAuthenticated && !isAuthorized" />
+    <DashboardAdm v-if="isAuthorized" ref="admRef" />
+    <DashboardUser v-if="isAuthenticated && !isAuthorized" ref="userRef" />
 
     <!-- Componente de fundo comum para todas as telas -->
     <Background v-if="!isAuthenticated"/>
@@ -87,14 +87,20 @@ export default {
       // Após 2 segundos, redireciona para o dashboard
       setTimeout(() => {
         this.navItems.splice(0, this.navItems.length);
-        this.navItems.push({name: 'Home', link: "#"});
-        this.navItems.push({name: 'Minhas Inscrições', link: "#"});
+        this.navItems.push({name: 'Home', link: "#", event: 'homeClicked'});
+        this.navItems.push({name: 'Minhas Inscrições', link: "#", event: 'myRegs'});
         this.navItems.push({name: 'FAQs', link: "#"});
         this.navItems.push({name: 'Sobre', link: "#"});
         this.$refs.navbarRef.enter();
         this.$router.push('/dashboard-user');  // Redireciona para o dashboard
       }, 2000);
-    }
+    },
+    homeClicked(){
+      this.$refs.userRef.fetchOpenEvents();
+    },
+    myRegs(){
+      this.$refs.userRef.showForUser();
+    },
   }
 };
 </script>

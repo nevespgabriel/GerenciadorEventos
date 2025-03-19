@@ -7,7 +7,7 @@ export default (sequelize, DataTypes) => {
       allowNull: false
     },
     datetime: {
-      type: DataTypes.DATE, 
+      type: DataTypes.DATE,
       allowNull: false,
       validate: {
         isAfter: {
@@ -25,35 +25,41 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         min: {
-          args: [1], // Valor mínimo permitido
+          args: [1],
           msg: 'A capacidade deve ser maior que 0.'
         }
       }
     },
     status: {
       type: DataTypes.ENUM,
-      values: ['open', 'closed', 'completed', 'canceled'], 
-      defaultValue: 'open', 
+      values: ['open', 'closed', 'completed', 'canceled'],
+      defaultValue: 'open',
       allowNull: false
     },
     creatorId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Users', 
-        key: 'id' 
+        model: 'Users',
+        key: 'id'
       }
     }
   }, {
-    freezeTableName: true, 
+    freezeTableName: true,
   });
 
-  
   Event.associate = function(models) {
-    
+    // Associa um evento a um usuário (criador)
     Event.belongsTo(models.Users, {
       foreignKey: 'creatorId',
       as: 'creator'
+    });
+
+    // Configura a exclusão em cascata para as inscrições relacionadas
+    Event.hasMany(models.Registration, {
+      foreignKey: 'idEvent',
+      as: 'registrations',
+      onDelete: 'CASCADE'  // Remove inscrições relacionadas quando o evento é deletado
     });
   };
 

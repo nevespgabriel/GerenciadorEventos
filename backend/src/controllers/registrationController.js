@@ -1,5 +1,5 @@
 import db from "../models/index.js";
-const { Registration } = db; 
+const { Registration, Event } = db; 
 
 export const store = async (req, res) => {
   try {
@@ -29,7 +29,6 @@ export const show = async (req, res) => {
         idUser: idUser     
       }
     });
-
     if (registration) {
       res.json(registration);
     } else {
@@ -42,17 +41,25 @@ export const show = async (req, res) => {
 
 export const showForUser = async (req, res) => {
   try {
-    const { idEvent } = req.params;
-    const registrations = await Registration.find({
+    
+    const { idUser } = req.params;
+    console.log("Chegou aqui");
+    // Usa `findAll` em vez de `find`
+    const registrations = await Registration.findAll({
       where: {
-        idEvent: idEvent, 
-      }
-    }).populate("idEvent");
-
-    if (registrations) {
+        idUser: idUser, 
+      },
+      include: [
+        {
+          model: Event, 
+          as: 'event' 
+        }
+      ]
+    });
+    if (registrations.length > 0) {
       res.json(registrations);
     } else {
-      res.json("");
+      res.json([]);
     }
   } catch (error) {
     res.status(500).send(error.message);
