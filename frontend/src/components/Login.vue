@@ -87,12 +87,12 @@ export default {
       try {
         // Enviar requisição para a rota /login usando axios
         const response = await axios.post('http://localhost:3000/user/login', userCredentials);
-        localStorage.setItem('authToken', response.data.token);
 
         // Exibir mensagem de sucesso
         this.successMessage = 'Login realizado com sucesso!';
 
         const decodedToken = jwtDecode(response.data.token);
+        localStorage.setItem('authToken', response.data.token);
         console.log("Decoded.");
         const userRole = decodedToken.role;  // Aqui você obtém a role do usuário a partir do token
 

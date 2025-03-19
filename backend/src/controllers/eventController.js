@@ -1,8 +1,10 @@
-import Event from "../models/Event.js";
+import db from "../models/index.js";
+const { Event } = db
 
 export const store = async (req, res) => {
   try {
-    const event = await Event.create(req.body);; 
+    req.body.creatorId = req.user.id;
+    const event = await Event.create(req.body);
     res.status(201).json({ event }); 
   } catch (error) {
     res.status(500).send(error.message);

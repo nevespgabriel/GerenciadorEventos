@@ -7,10 +7,12 @@ import {
   update,
 } from "../controllers/eventController.js";
 import authorizer from "../middlewares/authorizer.js";
+import authenticator from "../middlewares/authenticator.js";
 
 const router = Router();
 
-router.use(authorizer(["admin"]));
+router.use(authenticator);
+router.use(authorizer("admin"));
 
 router.get("/", index);
 router.get("/:id", show);

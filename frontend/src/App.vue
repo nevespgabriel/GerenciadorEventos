@@ -9,9 +9,6 @@
     <DashboardAdm v-if="isAuthorized" />
     <DashboardUser v-if="isAuthenticated && !isAuthorized" />
 
-    <!-- Exibe o dashboard após o login, se autenticado -->
-    <router-view v-if="isAuthenticated" /> <!-- Aqui, o Vue Router vai mostrar o Dashboard -->
-
     <!-- Componente de fundo comum para todas as telas -->
     <Background v-if="!isAuthenticated"/>
   </div>
@@ -33,7 +30,9 @@ export default {
     Login,
     SignUp,
     Navbar,
-    Background
+    Background,
+    DashboardAdm,
+    DashboardUser
   },
   data() {
     return {
@@ -60,6 +59,7 @@ export default {
     handleLoginAdm() {
       this.isAuthenticated = true;
       this.isAuthorized = true;
+      console.log("Logou");
       // Após 2 segundos, redireciona para o dashboard
       setTimeout(() => {
         this.navItems.splice(0, this.navItems.length);
@@ -88,7 +88,7 @@ export default {
       setTimeout(() => {
         this.navItems.splice(0, this.navItems.length);
         this.navItems.push({name: 'Home', link: "#"});
-        this.navItems.push({name: 'Meus Eventos', link: "#"});
+        this.navItems.push({name: 'Minhas Inscrições', link: "#"});
         this.navItems.push({name: 'FAQs', link: "#"});
         this.navItems.push({name: 'Sobre', link: "#"});
         this.$refs.navbarRef.enter();

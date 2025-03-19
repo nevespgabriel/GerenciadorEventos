@@ -24,6 +24,7 @@ const newUser = async (req, res, role) => {
 
 export const login = async (req, res) => {
   try {
+    console.log("Está no login");
     const { email, password } = req.body;
 
     const user = await Users.findOne({
@@ -32,7 +33,7 @@ export const login = async (req, res) => {
 
     if (user && (await user.isValidPassword(password))) {
       const token = generateToken(user);
-
+      console.log(req.headers.authorization);
       return res.json({
         token,
       });
