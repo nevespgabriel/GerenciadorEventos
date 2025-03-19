@@ -1,46 +1,46 @@
 export default {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Registrations', {
+    await queryInterface.createTable("Registrations", {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
       },
       idEvent: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Events', // Refere-se à tabela Events
-          key: 'id'
-        }
+          model: "Events",
+          key: "id",
+        },
       },
       idUser: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users', // Refere-se à tabela Users
-          key: 'id'
-        }
+          model: "Users",
+          key: "id",
+        },
       },
       status: {
         type: Sequelize.ENUM,
-        values: ['pending', 'confirmed', 'canceled'],
-        defaultValue: 'pending',
-        allowNull: false
+        values: ["pending", "confirmed", "canceled"],
+        defaultValue: "pending",
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Registrations');
-  }
+    await queryInterface.dropTable("Registrations");
+  },
 };

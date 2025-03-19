@@ -15,7 +15,7 @@ const router = Router();
 router.use(authenticator);
 
 router.post("/", store);
-router.put("/:id", update);
+router.put("/:idEvent/:idUser", update);
 router.get("/:idEvent/:idUser", show);
 router.get("/:idUser", showForUser);
 

@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import "dotenv/config";
 
 const config = {
   development: {
@@ -8,7 +8,7 @@ const config = {
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
     port: process.env.DB_PORT,
-    logging: console.log
+    logging: console.log,
   },
   test: {
     username: process.env.DB_USERNAME,
@@ -17,7 +17,7 @@ const config = {
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
     port: process.env.DB_PORT,
-    logging: false
+    logging: false,
   },
   production: {
     username: process.env.DB_USERNAME,
@@ -30,10 +30,10 @@ const config = {
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false
-      }
-    }
-  }
+        rejectUnauthorized: false,
+      },
+    },
+  },
 };
 
 export default config;

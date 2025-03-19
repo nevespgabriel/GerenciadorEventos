@@ -1,164 +1,199 @@
 <template>
-    <div class="container mt-5">
-      <!-- Título -->
-      <div class="row mb-4">
-        <div class="col-md-12 text-center">
-          <h1 class="display-4">Eventos Disponíveis</h1>
+  <div class="container mt-5">
+    <!-- Título -->
+    <div class="row mb-4">
+      <div class="col-md-12 text-center">
+        <h1 class="display-4" v-if="!registrations">Eventos Disponíveis</h1>
+        <h1 class="display-4" v-if="registrations">Inscrições</h1>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <div class="input-group">
+          <input
+            v-model="searchTerm"
+            type="text"
+            class="form-control"
+            placeholder="Pesquisar eventos"
+          />
+          <button @click="searchEvents" class="btn btn-primary" type="button">
+            Buscar
+          </button>
         </div>
       </div>
-      
-      <!-- Barra de Pesquisa -->
-      <div class="row mb-4">
-        <div class="col-md-12">
-          <div class="input-group">
-            <input
-              v-model="searchTerm"
-              type="text"
-              class="form-control"
-              placeholder="Pesquisar eventos"
-            />
-            <button @click="searchEvents" class="btn btn-primary" type="button">
-              Buscar
-            </button>
-          </div>
-        </div>
-      </div>
-  
-      <hr>
-      
-      <!-- Seção de Eventos -->
-      <div class="row">
-        <div v-for="event in filteredEvents" :key="event.id" class="col-md-4 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">{{ event.name }}</h5>
-              <p class="card-text">Local: {{ event.location }}</p>
-              <p class="card-text">Capacidade: {{ event.capacity }}</p>
-              <p class="card-text">Data e Hora: {{ formatDate(event.datetime) }}</p>
-              
-              <!-- Botão de Inscrever-se -->
-              <div class="d-flex justify-content-end">
-                <button class="btn btn-success" @click="enroll(event.id)">
-                  Inscrever-se
-                </button>
-              </div>
+    </div>
+
+    <hr />
+
+    <div class="row">
+      <div
+        v-for="event in filteredEvents"
+        :key="event.id"
+        class="col-md-4 mb-4"
+      >
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ event.name }}</h5>
+            <p class="card-text">Local: {{ event.location }}</p>
+            <p class="card-text" v-if="!registrations">
+              Capacidade: {{ event.capacity }}
+            </p>
+            <p class="card-text" v-if="registrations">
+              Status: {{ event.eventStatus }}
+            </p>
+            <p class="card-text">
+              Data e Hora: {{ formatDate(event.datetime) }}
+            </p>
+
+            <div class="d-flex justify-content-end">
+              <button
+                class="btn btn-success"
+                @click="enroll(event.id)"
+                v-if="!registrations"
+              >
+                Inscrever-se
+              </button>
+              <button
+                class="btn btn-danger"
+                @click="cancel(event.event.id)"
+                v-if="registrations"
+              >
+                Cancelar Inscrição
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </template>
-  
-  <script>
-  import axios from "axios";
-  import { jwtDecode } from "jwt-decode";
-  export default {
-    data() {
-      return {
-        events: [], // Lista de eventos abertos
-        searchTerm: '', // Termo de pesquisa
-      };
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
+export default {
+  data() {
+    return {
+      events: [],
+      searchTerm: "",
+      registrations: false,
+    };
+  },
+  computed: {
+    filteredEvents() {
+      if (this.searchTerm) {
+        return this.events.filter((event) =>
+          event.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+        );
+      }
+      return this.events;
     },
-    computed: {
-      // Filtrar eventos com base no termo de pesquisa
-      filteredEvents() {
-        if (this.searchTerm) {
-          return this.events.filter((event) =>
-            event.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-          );
-        }
-        return this.events;
-      },
-    },
-    methods: {
-      // Buscar eventos abertos pela rota /event/open
-      async showForUser() {
-        try {
-            const token = localStorage.getItem('authToken');
-            const decodedToken = jwtDecode(token);
-            console.log(decodedToken);
-            const response = await axios.get(`http://localhost:3000/registration/${decodedToken.id}`, {
+  },
+  methods: {
+    async showForUser() {
+      this.registrations = true;
+      try {
+        const token = localStorage.getItem("authToken");
+        const decodedToken = jwtDecode(token);
+        console.log(decodedToken);
+        const response = await axios.get(
+          `http://localhost:3000/registration/${decodedToken.id}`,
+          {
             headers: {
-                Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
-            });
+          }
+        );
 
-            const regists = response.data;
-            const filteredEvents = [];
+        const regists = response.data;
+        const filteredEvents = [];
 
-            for (const regist of regists) {
-            try {
-                filteredEvents.push(regist);
-            } catch (err) {
-                alert("Erro ao buscar inscrições.");
+        for (const regist of regists) {
+          try {
+            if (regist.status != "canceled") {
+              regist.name = regist.event.name;
+              regist.location = regist.event.location;
+              regist.datetime = regist.event.datetime;
+              regist.eventStatus = regist.event.status;
+              filteredEvents.push(regist);
             }
-            }
-
-            this.events = filteredEvents;
-
-        } catch (error) {
-            console.error('Erro ao buscar eventos inscritos:', error);
+          } catch (err) {
+            alert("Erro ao buscar inscrições.");
+          }
         }
+
+        this.events = filteredEvents;
+      } catch (error) {
+        console.error("Erro ao buscar eventos inscritos:", error);
+      }
     },
-      async fetchOpenEvents() {
-        try {
-            const token = localStorage.getItem('authToken');
-            const decodedToken = jwtDecode(token);
-            console.log(decodedToken);
-            const response = await axios.get('http://localhost:3000/event/open', {
-            headers: {
-                Authorization: `Bearer ${token}`, // Adiciona o token no cabeçalho
-            },
-            });
+    async fetchOpenEvents() {
+      this.registrations = false;
+      try {
+        const token = localStorage.getItem("authToken");
+        const decodedToken = jwtDecode(token);
+        console.log(decodedToken);
+        const response = await axios.get("http://localhost:3000/event/open", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-            const events = response.data; // Lista de eventos abertos
-            const filteredEvents = [];
+        const events = response.data;
+        const filteredEvents = [];
 
-            console.log("ate´")
-            for (const event of events) {
-            try {
-                // Verifica se o usuário já está inscrito no evento
-                console.log(event);
-                const registrationResponse = await axios.get(`http://localhost:3000/registration/${event.id}/${decodedToken.id}`, {
+        for (const event of events) {
+          try {
+            console.log(event);
+            const registrationResponse = await axios.get(
+              `http://localhost:3000/registration/${event.id}/${decodedToken.id}`,
+              {
                 headers: {
-                    Authorization: `Bearer ${token}`, // Adiciona o token no cabeçalho para verificar a inscrição
+                  Authorization: `Bearer ${token}`,
                 },
-                });
+              }
+            );
 
-                const registration = registrationResponse.data;
+            const registration = registrationResponse.data;
 
-                // Se a inscrição não for encontrada ou não for ativa, mantém o evento na lista
-                if (!registration || registration.status != "confirmed") {
-                  filteredEvents.push(event);
-                }
-
-            } catch (err) {
-                if (err.response && err.response.status === 404) {
-                // Se a inscrição não for encontrada (404), o evento deve ser mantido na lista
-                filteredEvents.push(event);
-                } else {
-                console.error('Erro ao verificar inscrição:', err);
-                }
+            if (!registration || registration.status != "confirmed") {
+              filteredEvents.push(event);
             }
+          } catch (err) {
+            if (err.response && err.response.status === 404) {
+              filteredEvents.push(event);
+            } else {
+              console.error("Erro ao verificar inscrição:", err);
             }
-
-            this.events = filteredEvents; // Define a lista de eventos filtrados
-
-        } catch (error) {
-            console.error('Erro ao buscar eventos abertos:', error);
+          }
         }
+
+        this.events = filteredEvents;
+      } catch (error) {
+        console.error("Erro ao buscar eventos abertos:", error);
+      }
     },
-  
-      // Inscrição em evento
-      async enroll(eventId) {
-        try {
-          const token = localStorage.getItem('authToken');
-          const decodedToken = jwtDecode(token);
+
+    async enroll(eventId) {
+      try {
+        const token = localStorage.getItem("authToken");
+        const decodedToken = jwtDecode(token);
+        const registrationResponse = await axios.get(
+          `http://localhost:3000/registration/${eventId}/${decodedToken.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, 
+            },
+          }
+        );
+        const registration = registrationResponse.data;
+        if (!registration) {
           await axios.post(
             `http://localhost:3000/registration`,
             {
-                idUser: decodedToken.id,
-                idEvent: eventId
+              idUser: decodedToken.id,
+              idEvent: eventId,
             },
             {
               headers: {
@@ -166,68 +201,99 @@
               },
             }
           );
-          alert("Inscrição realizada com sucesso!");
-          this.fetchOpenEvents();
-        } catch (error) {
-          alert('Erro ao se inscrever no evento');
+        } else {
+          await axios.put(
+            `http://localhost:3000/registration/${eventId}/${decodedToken.id}`,
+            {
+              status: "confirmed",
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
         }
-      },
-  
-      // Função para formatar a data e hora
-      formatDate(datetime) {
-        const date = new Date(datetime);
-        const options = {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        };
-        return date.toLocaleString('pt-BR', options);
-      },
+        alert("Inscrição realizada com sucesso!");
+        this.fetchOpenEvents();
+      } catch (error) {
+        alert("Erro ao se inscrever no evento");
+      }
     },
-    mounted() {
-      this.fetchOpenEvents();
+    async cancel(eventId) {
+      try {
+        const token = localStorage.getItem("authToken");
+        const decodedToken = jwtDecode(token);
+        await axios.put(
+          `http://localhost:3000/registration/${eventId}/${decodedToken.id}`,
+          {
+            status: "canceled",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        alert("Inscrição cancelada com sucesso!");
+        this.showForUser();
+      } catch (error) {
+        alert("Erro ao cancelar inscrição!");
+      }
     },
-  };
-  </script>
-  
-  <style scoped>
-  /* Estilos customizados */
-  .container {
-    padding-top: 7rem;
-  }
-  
-  /* Estilos do título */
-  h1 {
-    font-size: 3rem;
-    font-weight: bold;
-    color: #343a40;
-  }
-  
-  /* Barra de pesquisa */
-  .input-group {
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  
-  h5{
-        margin-bottom: 1.2rem;
-        font-weight: 600;
-    }
 
-  hr {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    formatDate(datetime) {
+      const date = new Date(datetime);
+      const options = {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      };
+      return date.toLocaleString("pt-BR", options);
+    },
+  },
+  mounted() {
+    this.fetchOpenEvents();
+  },
+};
+</script>
+
+<style scoped>
+
+.container {
+  padding-top: 7rem;
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #343a40;
+}
+
+.input-group {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+h5 {
+  margin-bottom: 1.2rem;
+  font-weight: 600;
+}
+
+hr {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-top: 12rem;
   }
-  
-  @media (max-width: 768px) {
-    .container {
-      padding-top: 12rem;
-    }
-  
-    h1 {
-      font-size: 2.5rem;
-    }
+
+  h1 {
+    font-size: 2.5rem;
   }
-  </style>
+}
+</style>

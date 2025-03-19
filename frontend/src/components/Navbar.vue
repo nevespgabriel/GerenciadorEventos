@@ -1,41 +1,58 @@
 <template>
   <div class="p-3 text-bg-dark fixed-top">
     <div class="container">
-      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-          <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+      <div
+        class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
+      >
+        <a
+          href="/"
+          class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
+        >
+          <svg
+            class="bi me-2"
+            width="40"
+            height="32"
+            role="img"
+            aria-label="Bootstrap"
+          >
             <use xlink:href="#bootstrap"></use>
           </svg>
         </a>
-
-        <!-- Navegação -->
-        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <ul
+          class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
+        >
           <li v-for="(item, index) in navItems" :key="index">
-            <a :href="item.link" class="nav-link px-2 text-white" @click="handleItemClick(item.event)">{{ item.name }}</a>
+            <a
+              :href="item.link"
+              class="nav-link px-2 text-white"
+              @click="handleItemClick(item.event)"
+              >{{ item.name }}</a
+            >
           </li>
         </ul>
-
-        <!-- Botões de Login e Signup -->
         <div class="text-end">
-          <button 
-            type="button" 
+          <button
+            type="button"
             class="btn btn-outline-light me-2"
             @click="$emit('switchToLogin')"
-            v-if="init">
+            v-if="init"
+          >
             Login
           </button>
-          <button 
-            type="button" 
-            class="btn btn-secondary" 
+          <button
+            type="button"
+            class="btn btn-secondary"
             @click="$emit('switchToSignUp')"
-            v-if="init">
+            v-if="init"
+          >
             Sign-up
           </button>
           <button
-            type="button" 
-            class="btn btn-danger" 
+            type="button"
+            class="btn btn-danger"
             @click="$emit('notAuth')"
-            v-if="!init">
+            v-if="!init"
+          >
             Sair
           </button>
         </div>
@@ -46,39 +63,38 @@
 
 <script>
 export default {
-  name: 'Navbar',
+  name: "Navbar",
   props: {
     navItems: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   mounted() {
-    if (typeof window !== 'undefined' && window.bootstrap) {
-      new window.bootstrap.Navbar(document.querySelector('.navbar'));
+    if (typeof window !== "undefined" && window.bootstrap) {
+      new window.bootstrap.Navbar(document.querySelector(".navbar"));
     }
   },
   data() {
     return {
-      init:true
+      init: true,
     };
   },
-  methods:{
+  methods: {
     handleItemClick(event) {
       this.$emit(event);
     },
     enter() {
       this.init = false;
     },
-    back(){
+    back() {
       this.init = true;
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-/* Personalizações e estilo do navbar */
 .navbar {
   padding: 1rem 2rem;
   transition: all 0.3s ease;
@@ -97,7 +113,6 @@ export default {
   transform: scale(1.08);
 }
 
-/* Ajustando a margem do conteúdo para evitar sobreposição com a navbar fixa */
 body {
   padding-top: 80px;
 }

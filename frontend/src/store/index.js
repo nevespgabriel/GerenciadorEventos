@@ -1,20 +1,20 @@
-import { createStore } from 'vuex';
+import { createStore } from "vuex";
 
 export default createStore({
   state: {
-    user: null
+    user: null,
   },
   mutations: {
     SET_USER(state, user) {
       state.user = user;
-    }
+    },
   },
   actions: {
     setUser({ commit }, user) {
-      commit('SET_USER', user);
-    }
+      commit("SET_USER", user);
+    },
   },
   getters: {
-    isAuthenticated: state => !!state.user
-  }
+    isAuthenticated: (state) => !!state.user,
+  },
 });

@@ -5,7 +5,7 @@ export const generateToken = (user) =>
     {
       id: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
     },
     process.env.JWT_PRIVATE_KEY,
     {
@@ -15,9 +15,9 @@ export const generateToken = (user) =>
 
 export const verifyToken = (token) => {
   try {
-    return jwt.verify(token, process.env.JWT_PRIVATE_KEY); // Tenta verificar o token
+    return jwt.verify(token, process.env.JWT_PRIVATE_KEY);
   } catch (error) {
     console.error("Erro ao verificar token:", error.message);
-    return null; // Retorna null em caso de erro (token inválido ou expirado)
+    return null;
   }
 };

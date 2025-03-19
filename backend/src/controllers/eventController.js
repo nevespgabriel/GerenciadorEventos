@@ -1,23 +1,22 @@
 import db from "../models/index.js";
-const { Event } = db
+const { Event } = db;
 
 export const store = async (req, res) => {
   try {
     req.body.creatorId = req.user.id;
     const event = await Event.create(req.body);
-    res.status(201).json({ event }); 
+    res.status(201).json({ event });
   } catch (error) {
     res.status(500).send(error.message);
   }
 };
 
-
 export const index = async (req, res) => {
   try {
-    const events = await Event.findAll(); 
-    res.json(events); 
+    const events = await Event.findAll();
+    res.json(events);
   } catch (error) {
-    res.status(500).send(error.message); 
+    res.status(500).send(error.message);
   }
 };
 
@@ -25,12 +24,12 @@ export const indexOpenEvents = async (req, res) => {
   try {
     const openEvents = await Event.findAll({
       where: {
-        status: 'open',
+        status: "open",
       },
     });
-    res.json(openEvents); 
+    res.json(openEvents);
   } catch (error) {
-    res.status(500).send(error.message); 
+    res.status(500).send(error.message);
   }
 };
 
@@ -40,42 +39,42 @@ export const show = async (req, res) => {
     if (event) {
       res.json(event);
     } else {
-      res.status(404).send('Evento não encontrado'); 
+      res.status(404).send("Evento não encontrado");
     }
   } catch (error) {
-    res.status(500).send(error.message); 
+    res.status(500).send(error.message);
   }
 };
 
 export const update = async (req, res) => {
   try {
     const [updated] = await Event.update(req.body, {
-      where: { id: req.params.id }, 
+      where: { id: req.params.id },
     });
 
     if (updated) {
       const updatedEvent = await Event.findByPk(req.params.id);
       res.json(updatedEvent);
     } else {
-      res.status(404).send('Evento não encontrado');
+      res.status(404).send("Evento não encontrado");
     }
   } catch (error) {
-    res.status(500).send(error.message); 
+    res.status(500).send(error.message);
   }
 };
 
 export const destroy = async (req, res) => {
   try {
     const deleted = await Event.destroy({
-      where: { id: req.params.id }, 
+      where: { id: req.params.id },
     });
 
     if (deleted) {
-      res.status(204).send(); 
+      res.status(204).send();
     } else {
-      res.status(404).send('Evento não encontrado');
+      res.status(404).send("Evento não encontrado");
     }
   } catch (error) {
-    res.status(500).send(error.message); 
+    res.status(500).send(error.message);
   }
 };

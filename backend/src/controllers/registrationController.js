@@ -1,22 +1,21 @@
 import db from "../models/index.js";
-const { Registration, Event } = db; 
+const { Registration, Event } = db;
 
 export const store = async (req, res) => {
   try {
-    const registration = await Registration.create(req.body);; 
-    res.status(201).json({ registration }); 
+    const registration = await Registration.create(req.body);
+    res.status(201).json({ registration });
   } catch (error) {
     res.status(500).send(error.message);
   }
 };
 
-
 export const index = async (req, res) => {
   try {
-    const registrations = await Registration.findAll(); 
-    res.json(registrations); 
+    const registrations = await Registration.findAll();
+    res.json(registrations);
   } catch (error) {
-    res.status(500).send(error.message); 
+    res.status(500).send(error.message);
   }
 };
 
@@ -25,9 +24,9 @@ export const show = async (req, res) => {
     const { idEvent, idUser } = req.params;
     const registration = await Registration.findOne({
       where: {
-        idEvent: idEvent, 
-        idUser: idUser     
-      }
+        idEvent: idEvent,
+        idUser: idUser,
+      },
     });
     if (registration) {
       res.json(registration);
@@ -41,20 +40,19 @@ export const show = async (req, res) => {
 
 export const showForUser = async (req, res) => {
   try {
-    
     const { idUser } = req.params;
     console.log("Chegou aqui");
     // Usa `findAll` em vez de `find`
     const registrations = await Registration.findAll({
       where: {
-        idUser: idUser, 
+        idUser: idUser,
       },
       include: [
         {
-          model: Event, 
-          as: 'event' 
-        }
-      ]
+          model: Event,
+          as: "event",
+        },
+      ],
     });
     if (registrations.length > 0) {
       res.json(registrations);
@@ -68,33 +66,37 @@ export const showForUser = async (req, res) => {
 
 export const update = async (req, res) => {
   try {
+    const { idEvent, idUser } = req.params;
     const [updated] = await Registration.update(req.body, {
-      where: { id: req.params.id }, 
+      where: {
+        idEvent: idEvent,
+        idUser: idUser,
+      },
     });
 
     if (updated) {
       const updatedRegistration = await Registration.findByPk(req.params.id);
       res.json(updatedRegistration);
     } else {
-      res.status(404).send('Registro não encontrado');
+      res.status(404).send("Registro não encontrado");
     }
   } catch (error) {
-    res.status(500).send(error.message); 
+    res.status(500).send(error.message);
   }
 };
 
 export const destroy = async (req, res) => {
   try {
     const deleted = await Registration.destroy({
-      where: { id: req.params.id }, 
+      where: { id: req.params.id },
     });
 
     if (deleted) {
-      res.status(204).send(); 
+      res.status(204).send();
     } else {
-      res.status(404).send('Registro não encontrado');
+      res.status(404).send("Registro não encontrado");
     }
   } catch (error) {
-    res.status(500).send(error.message); 
+    res.status(500).send(error.message);
   }
 };

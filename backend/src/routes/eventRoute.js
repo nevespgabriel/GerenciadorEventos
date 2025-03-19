@@ -5,7 +5,7 @@ import {
   show,
   store,
   update,
-  indexOpenEvents
+  indexOpenEvents,
 } from "../controllers/eventController.js";
 import authorizer from "../middlewares/authorizer.js";
 import authenticator from "../middlewares/authenticator.js";
