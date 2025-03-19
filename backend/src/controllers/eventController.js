@@ -21,6 +21,19 @@ export const index = async (req, res) => {
   }
 };
 
+export const indexOpenEvents = async (req, res) => {
+  try {
+    const openEvents = await Event.findAll({
+      where: {
+        status: 'open',
+      },
+    });
+    res.json(openEvents); 
+  } catch (error) {
+    res.status(500).send(error.message); 
+  }
+};
+
 export const show = async (req, res) => {
   try {
     const event = await Event.findByPk(req.params.id);

@@ -1,4 +1,5 @@
-import Registration from "../models/Registration.js";
+import db from "../models/index.js";
+const { Registration } = db; 
 
 export const store = async (req, res) => {
   try {
@@ -21,14 +22,21 @@ export const index = async (req, res) => {
 
 export const show = async (req, res) => {
   try {
-    const registration = await Registration.findByPk(req.params.id);
+    const { idEvent, idUser } = req.params;
+    const registration = await Registration.findOne({
+      where: {
+        idEvent: idEvent, 
+        idUser: idUser     
+      }
+    });
+
     if (registration) {
       res.json(registration);
     } else {
-      res.status(404).send('Registro não encontrado'); 
+      res.json("");
     }
   } catch (error) {
-    res.status(500).send(error.message); 
+    res.status(500).send(error.message);
   }
 };
 

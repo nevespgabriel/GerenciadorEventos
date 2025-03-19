@@ -5,6 +5,7 @@ import {
   show,
   store,
   update,
+  indexOpenEvents
 } from "../controllers/eventController.js";
 import authorizer from "../middlewares/authorizer.js";
 import authenticator from "../middlewares/authenticator.js";
@@ -12,6 +13,9 @@ import authenticator from "../middlewares/authenticator.js";
 const router = Router();
 
 router.use(authenticator);
+
+router.get("/open", indexOpenEvents);
+
 router.use(authorizer("admin"));
 
 router.get("/", index);

@@ -20,8 +20,8 @@ export default (sequelize, DataTypes) => {
     },
     status: {
       type: DataTypes.ENUM,
-      values: ['pending', 'confirmed', 'canceled'], 
-      defaultValue: 'pending', 
+      values: ['confirmed', 'canceled'], 
+      defaultValue: 'confirmed',
       allowNull: false
     }
   }, {

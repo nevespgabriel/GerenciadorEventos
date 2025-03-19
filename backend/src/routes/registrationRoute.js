@@ -15,11 +15,11 @@ router.use(authenticator);
 
 router.post("/", store);
 router.put("/:id", update);
+router.get("/:idEvent/:idUser", show);
 
 router.use(authorizer(["admin"]));
 
 router.get("/", index);
-router.get("/:id", show);
 router.delete("/:id", destroy);
 
 export default router;
