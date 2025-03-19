@@ -5,9 +5,9 @@ const { Users } = db
 
 const newUser = async (req, res, role) => {
   try {
-    console.log("Até aqui foi");
     const { name, cpf, email, password } = req.body;
     const user = await Users.create({ name, cpf, email, password, role});
+    console.log("Até aqui foi");
     return user;  // Apenas retornamos o usuário sem tentar enviar resposta
   } catch (error) {
     // Garantir que a resposta seja enviada apenas uma vez
@@ -26,7 +26,7 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({
+    const user = await Users.findOne({
       where: { email }, 
     });
 
@@ -47,15 +47,8 @@ export const login = async (req, res) => {
 export const signup = async (req, res) => {
   try {
     console.log(req.body);
-    const user = await newUser(req, res, "user");  // A resposta de erro já foi enviada se ocorrer um erro aqui
-
-    if (!user) { 
-      // Se `newUser` falhar, não continue com a execução
-      return; 
-    }
-
-    // Envia a resposta de sucesso
-    res.status(201);
+    const user = await newUser(req, res, "user"); 
+    res.status(201).send(user);
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);  // Resposta de erro caso haja exceção no fluxo

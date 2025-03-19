@@ -29,6 +29,7 @@ export default (sequelize, DataTypes) => {
     }
   });
 
+  // Hook para hash de senha antes de criar ou atualizar o usuário
   Users.beforeCreate(async (user) => {
     if (user.password) {
       user.password = await bcrypt.hash(user.password, 10);
@@ -40,6 +41,11 @@ export default (sequelize, DataTypes) => {
       user.password = await bcrypt.hash(user.password, 10);
     }
   });
+
+  // Adicionando o método isValidPassword ao modelo
+  Users.prototype.isValidPassword = async function(password) {
+    return await bcrypt.compare(password, this.password);
+  };
 
   return Users;
 };

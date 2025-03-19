@@ -153,13 +153,13 @@
           // Enviar requisição para a rota /signup usando axios
           console.log(newUser);
           const response = await axios.post('http://localhost:3000/user/signup', newUser);
-          console.log("FOI");
+          console.log(response);
           // Exibir mensagem de sucesso
           this.successMessage = 'Cadastro realizado com sucesso!';
   
           // Após 2 segundos, redirecionar para a tela de login
           setTimeout(() => {
-            this.$router.push('/login');
+            this.$emit('switchToLogin');
           }, 2000); // Redireciona após 2 segundos
   
         } catch (error) {
@@ -186,7 +186,7 @@ body {
   background-color: #f8f9fa;
   border-radius: 1rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 12rem 0rem 0rem 0rem; /* Espaço abaixo do formulário */
+  margin: 9rem 0rem 0rem 0rem; /* Espaço abaixo do formulário */
 }
 
 .form-floating input {
