@@ -76,6 +76,7 @@
         try {
             const token = localStorage.getItem('authToken');
             const decodedToken = jwtDecode(token);
+            console.log(decodedToken);
             const response = await axios.get('http://localhost:3000/event/open', {
             headers: {
                 Authorization: `Bearer ${token}`, // Adiciona o token no cabeçalho
@@ -89,7 +90,8 @@
             for (const event of events) {
             try {
                 // Verifica se o usuário já está inscrito no evento
-                const registrationResponse = await axios.get(`http://localhost:3000/registration/${event.idEvent}/${decodedToken.id}`, {
+                console.log(event);
+                const registrationResponse = await axios.get(`http://localhost:3000/registration/${event.id}/${decodedToken.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`, // Adiciona o token no cabeçalho para verificar a inscrição
                 },
@@ -98,8 +100,8 @@
                 const registration = registrationResponse.data;
 
                 // Se a inscrição não for encontrada ou não for ativa, mantém o evento na lista
-                if (!registration || !registration.isActive) {
-                filteredEvents.push(event);
+                if (!registration || registration.status != "confirmed") {
+                  filteredEvents.push(event);
                 }
 
             } catch (err) {
@@ -137,8 +139,9 @@
             }
           );
           alert("Inscrição realizada com sucesso!");
+          this.fetchOpenEvents();
         } catch (error) {
-          console.error('Erro ao se inscrever no evento:', error);
+          alert('Erro ao se inscrever no evento');
         }
       },
   

@@ -40,6 +40,25 @@ export const show = async (req, res) => {
   }
 };
 
+export const showForUser = async (req, res) => {
+  try {
+    const { idEvent } = req.params;
+    const registrations = await Registration.find({
+      where: {
+        idEvent: idEvent, 
+      }
+    }).populate("idEvent");
+
+    if (registrations) {
+      res.json(registrations);
+    } else {
+      res.json("");
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
 export const update = async (req, res) => {
   try {
     const [updated] = await Registration.update(req.body, {

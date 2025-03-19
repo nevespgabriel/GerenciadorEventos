@@ -26,6 +26,14 @@ export default (sequelize, DataTypes) => {
     }
   }, {
     freezeTableName: true, 
+
+    // Adiciona uma restrição de unicidade para idEvent e idUser
+    indexes: [
+      {
+        unique: true, // Define que a combinação deve ser única
+        fields: ['idEvent', 'idUser'] // As colunas que fazem parte da restrição
+      }
+    ]
   });
 
   Registration.associate = function(models) {
